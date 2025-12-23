@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #00f5ff 0%, #0d8f8f 100%) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        .nav-link {
+            color: white !important;
+            margin-left: 1.5rem;
+            transition: 0.3s;
+        }
+        .nav-link:hover {
+            color: #ffeb3b !important;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        h1 {
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+            margin-bottom: 2rem;
+        }
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+        .search-input {
+            border: 2px solid #00f5ff;
+            border-radius: 10px;
+            padding: 12px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .search-input:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: #ffeb3b;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+            color: white;
+        }
+        .btn-search {
+            background: linear-gradient(90deg, #ffeb3b 0%, #fbc02d 100%);
+            color: #000;
+            border: none;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 12px 40px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 235, 59, 0.4);
+            color: #000;
+        }
+        .card {
+            background: linear-gradient(135deg, #1a2f4a 0%, #243447 100%);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #00f5ff;
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.3);
+        }
+        .card-img-top {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(0, 245, 255, 0.2);
+        }
+        .card-body {
+            padding: 15px;
+        }
+        .book-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #00f5ff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .book-author {
+            font-size: 0.85rem;
+            color: #a8dadc;
+        }
+        .books-grid {
+            padding: 30px 20px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.2rem;
+            color: #ffeb3b;
+        }
+    </style>
+    </head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand">📚 My Book Recommender</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/recommend">Recommendation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row text-center mt-5">
+            <div class="col-12">
+                <h1>🔍 Find Your Next Great Read</h1>
+                <div class="search-container">
+                    <form method="POST" action="/Recommend_Books">
+                        <div class="input-group">
+                            <input name="user_input" type="text" class="form-control search-input" placeholder="Enter book name..." required>
+                            <button type="submit" class="btn btn-search">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 books-grid">
+            {%if data %}
+                {% for i in data %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <div class="card">
+                            <img class="card-img-top" src="{{i[2]}}" alt="{{i[0]}}">
+                            <div class="card-body">
+                                <p class="book-title">{{i[0]}}</p>
+                                <p class="book-author">by {{i[1]}}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="no-results">📖 Search for a book to get personalized recommendations!</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
