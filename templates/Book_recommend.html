@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #00f5ff 0%, #0d8f8f 100%) !important;
+            box-shadow: 0 4px 15px rgba(0, 245, 255, 0.2);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: white !important;
+            letter-spacing: 0.5px;
+        }
+        .nav-link {
+            color: white !important;
+            margin-left: 2rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffeb3b;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #ffeb3b !important;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        h1 {
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+        .page-header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(13, 143, 143, 0.1) 100%);
+            border-radius: 15px;
+            margin: 2.5rem 0 3rem 0;
+            border: 1px solid rgba(0, 245, 255, 0.2);
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: #a8dadc;
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+        .card {
+            background: linear-gradient(135deg, #1a2f4a 0%, #243447 100%);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: #00f5ff;
+            box-shadow: 0 12px 35px rgba(0, 245, 255, 0.4);
+        }
+        .card-img-top {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-bottom: 3px solid rgba(0, 245, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .card:hover .card-img-top {
+            transform: scale(1.08);
+        }
+        .card-body {
+            padding: 18px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .book-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #00f5ff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .book-author {
+            font-size: 0.85rem;
+            color: #a8dadc;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .book-stats {
+            font-size: 0.8rem;
+            color: #ffeb3b;
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stats-label {
+            color: #00f5ff;
+            font-weight: 600;
+        }
+        .stats-value {
+            background: rgba(255, 235, 59, 0.1);
+            padding: 4px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #ffeb3b;
+        }
+        .books-grid {
+            padding: 30px 0;
+        }
+    </style>
+    </head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand">📚 My Book Recommender</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/recommend">Recommendation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>⭐ Top 50 Rated Books</h1>
+            <p class="page-subtitle">Discover the most popular and highly-rated books in our collection</p>
+        </div>
+        <div class="row g-4 books-grid">
+            {% for book in range(book_name|length) %}
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="card">
+                        <img class="card-img-top" src="{{image[book]}}" alt="{{book_name[book]}}" loading="lazy">
+                        <div class="card-body">
+                            <p class="book-title">{{book_name[book]}}</p>
+                            <p class="book-author">✍️ {{author[book]}}</p>
+                            <div style="border-top: 1px solid rgba(0, 245, 255, 0.2); margin: 12px 0;"></div>
+                            <p class="book-stats">
+                                <span class="stats-label">⭐ Rating</span>
+                                <span class="stats-value">{{rating[book]|round(2)}}</span>
+                            </p>
+                            <p class="book-stats">
+                                <span class="stats-label">📊 Votes</span>
+                                <span class="stats-value">{{votes[book]}}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
