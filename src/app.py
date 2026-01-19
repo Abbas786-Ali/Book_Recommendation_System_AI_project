@@ -19,31 +19,74 @@ from flask import Flask, render_template, request
 import numpy as np
 import pickle
 import os
+from pathlib import Path
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+# Get the root directory of the project
+BASE_DIR = Path(__file__).parent.parent
+DATA_DIR = BASE_DIR / "data" / "processed"
+TEMPLATE_DIR = BASE_DIR / "app" / "templates"
+STATIC_DIR = BASE_DIR / "app" / "static"
 
 # ============================================================================
 # LOAD PRE-COMPUTED MODELS AND DATA
 # ============================================================================
 
-# Popular books data (top 50 rated books with metadata)
-popular_df = pickle.load(open('popular.pkl','rb'))
+def load_models():
+    """Load all pre-computed machine learning models and data."""
+    try:
+        # Popular books data (top 50 rated books with metadata)
+        popular_df = pickle.load(open(DATA_DIR / 'popular.pkl', 'rb'))
+        
+        # Collaborative Filtering Models
+        pt = pickle.load(open(DATA_DIR / 'pt.pkl', 'rb'))                          # User-Item Matrix
+        books = pickle.load(open(DATA_DIR / 'books.pkl', 'rb'))                    # Book metadata
+        similarity_scores = pickle.load(open(DATA_DIR / 'similarity_scores.pkl', 'rb'))  # Cosine similarity
+        
+        # Content-Based Filtering Models
+        content_similarity = pickle.load(open(DATA_DIR / 'content_similarity.pkl', 'rb'))
+        content_book_index = pickle.load(open(DATA_DIR / 'content_book_index.pkl', 'rb'))
+        books_unique = pickle.load(open(DATA_DIR / 'books_unique.pkl', 'rb'))
+        
+        return {
+            'popular_df': popular_df,
+            'pt': pt,
+            'books': books,
+            'similarity_scores': similarity_scores,
+            'content_similarity': content_similarity,
+            'content_book_index': content_book_index,
+            'books_unique': books_unique
+        }
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Model file not found: {e}. Ensure all pickle files are in {DATA_DIR}")
 
-# Collaborative Filtering Models
-pt = pickle.load(open('pt.pkl','rb'))                          # User-Item Matrix
-books = pickle.load(open('books.pkl','rb'))                    # Book metadata
-similarity_scores = pickle.load(open('similarity_scores.pkl','rb'))  # Cosine similarity
-
-# Content-Based Filtering Models
-content_similarity = pickle.load(open('content_similarity.pkl','rb'))
-content_book_index = pickle.load(open('content_book_index.pkl','rb'))  # Title -> Index mapping
-books_unique = pickle.load(open('books_unique.pkl','rb'))      # Unique books dataset
+# Load models globally
+models = load_models()
+popular_df = models['popular_df']
+pt = models['pt']
+books = models['books']
+similarity_scores = models['similarity_scores']
+content_similarity = models['content_similarity']
+content_book_index = models['content_book_index']
+books_unique = models['books_unique']
 
 # ============================================================================
 # FLASK APP CONFIGURATION
 # ============================================================================
 
-# Set up Flask app with custom template directory
-template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
-app = Flask(__name__, template_folder=template_dir)
+def create_app():
+    """Create and configure Flask application."""
+    app = Flask(__name__, 
+                template_folder=str(TEMPLATE_DIR),
+                static_folder=str(STATIC_DIR),
+                static_url_path='/static')
+    
+    return app
+
+app = create_app()
 
 # ============================================================================
 # ROUTE HANDLERS
@@ -181,6 +224,24 @@ def recommend():
                          data=data, 
                          recommendation_type=recommendation_type, 
                          error_message=error_message)
+
+# ============================================================================
+# ERROR HANDLERS
+# ============================================================================
+
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors."""
+    return render_template('error.html', 
+                         error_code=404, 
+                         error_message="Page not found"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Handle 500 errors."""
+    return render_template('error.html', 
+                         error_code=500, 
+                         error_message="Internal server error"), 500
 
 # ============================================================================
 # APP STARTUP
