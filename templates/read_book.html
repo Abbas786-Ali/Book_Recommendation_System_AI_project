@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read - {{book_title}} - Book Recommendation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #00f5ff 0%, #0d8f8f 100%) !important;
+            box-shadow: 0 4px 15px rgba(0, 245, 255, 0.2);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.8rem;
+            color: white !important;
+            letter-spacing: 0.5px;
+        }
+        .nav-link {
+            color: white !important;
+            margin-left: 2rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffeb3b;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #ffeb3b !important;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            color: #00f5ff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+        }
+        .reader-header {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.08) 0%, rgba(13, 143, 143, 0.08) 100%);
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .book-title-reader {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00f5ff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+        .book-author-reader {
+            font-size: 1.2rem;
+            color: #a8dadc;
+            margin-bottom: 1.5rem;
+        }
+        .reader-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        .btn-option {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(13, 143, 143, 0.1) 100%);
+            color: #a8dadc;
+            border: 2px solid #00f5ff;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .btn-option:hover {
+            background: rgba(0, 245, 255, 0.15);
+            border-color: #ffeb3b;
+            color: #ffeb3b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 245, 255, 0.3);
+        }
+        .reader-container {
+            background: linear-gradient(135deg, #1a2f4a 0%, #243447 100%);
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            border-radius: 15px;
+            padding: 3rem;
+            margin: 2rem 0;
+            min-height: 600px;
+        }
+        .reading-options {
+            text-align: center;
+            padding: 3rem;
+        }
+        .reading-option {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.08) 0%, rgba(13, 143, 143, 0.08) 100%);
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .reading-option:hover {
+            border-color: #00f5ff;
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.2);
+            transform: translateY(-5px);
+        }
+        .option-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .option-title {
+            font-size: 1.5rem;
+            color: #00f5ff;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .option-description {
+            color: #a8dadc;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .btn-primary-read {
+            background: linear-gradient(90deg, #00f5ff 0%, #0d8f8f 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+        }
+        .btn-primary-read:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 245, 255, 0.4);
+            background: linear-gradient(90deg, #00e6f0 0%, #0a7a7a 100%);
+        }
+        .info-box {
+            background: rgba(0, 245, 255, 0.05);
+            border-left: 4px solid #00f5ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        .info-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">📚 My Book Recommender</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/recommend">Recommendation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/book/{{book_title}}" class="back-link">← Back to Book Details</a>
+        
+        <div class="reader-header">
+            <h1 class="book-title-reader">📖 {{book_title}}</h1>
+            <p class="book-author-reader">by {{book_author}}</p>
+            <p style="color: #a8dadc; margin-bottom: 0;">Choose how you'd like to read this book</p>
+        </div>
+
+        <div class="reader-container">
+            <div class="reading-options">
+                <div class="reading-option">
+                    <div class="option-icon">📚</div>
+                    <div class="option-title">Read on Google Books</div>
+                    <div class="option-description">
+                        Access the book on Google Books. Many books offer free preview or full reading options.
+                    </div>
+                    {% if isbn %}
+                        <a href="https://books.google.com/books?isbn={{isbn}}" target="_blank" class="btn-primary-read">
+                            Open on Google Books
+                        </a>
+                    {% else %}
+                        <button class="btn-primary-read" disabled style="opacity: 0.5; cursor: not-allowed;">
+                            ISBN not available
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div class="reading-option">
+                    <div class="option-icon">🔍</div>
+                    <div class="option-title">Search for More Options</div>
+                    <div class="option-description">
+                        Search for "{{book_title}}" on popular book reading platforms and libraries.
+                    </div>
+                    <a href="https://www.amazon.com/s?k={{book_title|replace(' ', '+')}}" target="_blank" class="btn-primary-read">
+                        Search on Amazon
+                    </a>
+                </div>
+
+                <div class="reading-option">
+                    <div class="option-icon">📖</div>
+                    <div class="option-title">Other Reading Platforms</div>
+                    <div class="option-description">
+                        Check your local library or free platforms like Standard Ebooks, Project Gutenberg.
+                    </div>
+                    <a href="https://www.gutenberg.org/ebooks/search/?query={{book_title|replace(' ', '+')}}" target="_blank" class="btn-primary-read">
+                        Search Project Gutenberg
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-text">
+                💡 <strong>Tip:</strong> You can find free or paid versions of this book on various platforms like Google Books, Amazon Kindle, Apple Books, or your local library's digital collection.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
